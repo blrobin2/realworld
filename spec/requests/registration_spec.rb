@@ -1,10 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe 'Registrations', type: :request do
+RSpec.describe 'Registrations' do
+  before do
+    stub_const('CONTENT_TYPE', 'application/json; charset=utf-8')
+  end
+
   describe 'valid registration' do
     let(:user) { build(:user) }
 
     before { signup(user) }
+
+    specify { expect(response.headers['Content-Type']).to eq(CONTENT_TYPE) }
 
     it 'registers a valid user' do
       user_response = response.parsed_body
@@ -24,6 +30,7 @@ RSpec.describe 'Registrations', type: :request do
 
     before { signup(user) }
 
+    specify { expect(response.headers['Content-Type']).to eq(CONTENT_TYPE) }
     specify { expect(response).to have_http_status(:unprocessable_entity) }
 
     it 'does not create user missing email' do

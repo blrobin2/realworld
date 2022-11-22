@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Authentications', type: :request do
+RSpec.describe 'Authentications' do
   before do
     stub_const('CONTENT_TYPE', 'application/json; charset=utf-8')
   end
