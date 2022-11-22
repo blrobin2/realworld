@@ -2,8 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'Authentications', type: :request do
   let(:user) { create(:user) }
+  let(:invalid_user) { build(:user) }
 
-  it 'logs a user in' do
+  it 'logs in a valid user' do
     login(user)
     user_response = response.parsed_body
 
@@ -14,6 +15,12 @@ RSpec.describe 'Authentications', type: :request do
       bio: user.bio,
       image: user.image
     )
+  end
+
+  it 'does not log in an invalid user' do
+    login(invalid_user)
+
+    expect(response).to have_http_status(:unauthorized)
   end
 
   def login(user)
