@@ -9,7 +9,7 @@ RSpec.describe 'Profiles' do
 
   describe 'find by username' do
     it 'can find a user by their username' do
-      get "/api/profiles/#{other.username}", headers: auth_headers
+      get profile_path(other.username), headers: auth_headers
 
       user_response = response.parsed_body
 
@@ -24,7 +24,23 @@ RSpec.describe 'Profiles' do
     end
 
     it 'can find a user without authenticating' do
-      get "/api/profiles/#{other.username}", headers: headers
+      get profile_path(other.username), headers: headers
+
+      user_response = response.parsed_body
+
+      expect(user_response['profile']).to eq(
+        {
+          'username' => other.username,
+          'bio' => other.bio,
+          'image' => other.image
+        }
+      )
+    end
+  end
+
+  describe 'follow a user' do
+    it 'can follow another user' do
+      post follow_profile_path(other.username), headers: auth_headers
 
       user_response = response.parsed_body
 
@@ -33,9 +49,15 @@ RSpec.describe 'Profiles' do
           'username' => other.username,
           'bio' => other.bio,
           'image' => other.image,
-          'following' => false
+          'following' => true
         }
       )
+    end
+
+    it 'prevents unauthenticated users from following' do
+      post follow_profile_path(other.username), headers: headers
+
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end

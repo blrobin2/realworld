@@ -13,11 +13,14 @@ Rails.application.routes.draw do
       }
 
     resource :user, only: [:show, :update]
-    resources :profiles, param: :username, only: [:show] do
-      member do
-        post 'follow', action: :follow
-        delete 'follow', action: :unfollow
+    resources :profiles,
+      param: :username,
+      constraints: { username: /[0-9A-Za-z\-\.\_]+/ },
+      only: [:show] do
+        member do
+          post 'follow', action: :follow
+          delete 'follow', action: :unfollow
+        end
       end
-    end
   end
 end
