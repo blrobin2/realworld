@@ -13,7 +13,26 @@ RSpec.describe 'Registrations', type: :request do
         email: user.email,
         token: an_instance_of(String),
         username: user.username,
+        bio: an_instance_of(String),
         image: user.image
+      )
+    end
+  end
+
+  describe 'missing email' do
+    let(:user) { User.new }
+
+    before { signup(user) }
+
+    specify { expect(response).to have_http_status(:unprocessable_entity) }
+
+    it 'does not create user missing email' do
+      expect(response.parsed_body).to eq(
+        'errors' => {
+          'email' => ["can't be blank"],
+          'password' => ["can't be blank"],
+          'username' => ["can't be blank"]
+        }
       )
     end
   end

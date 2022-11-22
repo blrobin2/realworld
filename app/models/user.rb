@@ -5,6 +5,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :jwt_authenticatable,
          jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Denylist
 
+  validates :username, presence: true
+
   attr_accessor :token
 
   def on_jwt_dispatch(token, _payload)
