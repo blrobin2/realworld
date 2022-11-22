@@ -10,4 +10,8 @@ class User < ApplicationRecord
   def on_jwt_dispatch(token, _payload)
     self.token = token
   end
+
+  def following
+    false
+  end
 end
