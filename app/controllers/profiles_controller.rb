@@ -15,7 +15,16 @@ class ProfilesController < ApplicationController
     end
   end
 
-  def unfollow; end
+  def unfollow
+    follow = Follow.find_by(follower: current_user, followed: @profile)
+    respond_to do |format|
+      if follow.destroy
+        format.json { render :show, status: :ok, location: @profile }
+      else
+        format.json { render json: follow.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
   private
 

@@ -60,4 +60,31 @@ RSpec.describe 'Profiles' do
       expect(response).to have_http_status(:unauthorized)
     end
   end
+
+  describe 'unfollow a user' do
+    before do
+      post follow_profile_path(other.username), headers: auth_headers
+    end
+
+    it 'can unfollow another user' do
+      delete follow_profile_path(other.username), headers: auth_headers
+
+      user_response = response.parsed_body
+
+      expect(user_response['profile']).to eq(
+        {
+          'username' => other.username,
+          'bio' => other.bio,
+          'image' => other.image,
+          'following' => false
+        }
+      )
+    end
+
+    it 'prevents unauthenticated users from unfollowing' do
+      delete follow_profile_path(other.username), headers: headers
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
 end
